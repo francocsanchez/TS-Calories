@@ -12,7 +12,15 @@ export type ActivityAction =
   | {
       type: "delete-activity";
       payload: { id: Activity["id"] };
+    }
+  | {
+      type: "reset-activities";
     };
+
+const activityList = (): Activity[] => {
+  const localStoreActivities = localStorage.getItem("activities");
+  return localStoreActivities ? JSON.parse(localStoreActivities) : [];
+};
 
 export type ActivityState = {
   activities: Activity[];
@@ -20,7 +28,7 @@ export type ActivityState = {
 };
 
 export const initialState: ActivityState = {
-  activities: [],
+  activities: activityList(),
   activeId: "",
 };
 
@@ -59,6 +67,13 @@ export const activityReducer = (
     return {
       ...state,
       activities: newListActivy,
+    };
+  }
+
+  if (action.type === "reset-activities") {
+    return {
+      activities: [],
+      activeId: "",
     };
   }
 
